@@ -1,0 +1,109 @@
+/**
+ * Copyright 2010 Philippe Beaudoin
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.gwtplatform.samples.login.client.presenter;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.inject.Inject;
+import com.gwtplatform.mvp.client.EventBus;
+import com.gwtplatform.mvp.client.PresenterImpl;
+import com.gwtplatform.mvp.client.View;
+import com.gwtplatform.mvp.client.annotations.NameToken;
+import com.gwtplatform.mvp.client.annotations.ProxyStandard;
+import com.gwtplatform.mvp.client.proxy.Place;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.client.proxy.PlaceRequest;
+import com.gwtplatform.mvp.client.proxy.Proxy;
+import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
+import com.gwtplatform.samples.login.client.NameTokens;
+import com.gwtplatform.samples.login.shared.FieldVerifier;
+
+public class LoginPresenter extends
+		PresenterImpl<LoginPresenter.MyView, LoginPresenter.MyProxy> {
+
+	public interface MyView extends View {
+		public Button getSendButton();
+
+		public void setError(String errorText);
+
+		public String getName();
+
+		public String getPassword();
+
+		public void resetAndFocus();
+	}
+
+	@ProxyStandard
+	@NameToken(NameTokens.loginPage)
+	public interface MyProxy extends Proxy<LoginPresenter>, Place {
+	}
+
+	private final PlaceManager placeManager;
+
+	@Inject
+	public LoginPresenter(EventBus eventBus, MyView view, MyProxy proxy,
+			PlaceManager placeManager) {
+		super(eventBus, view, proxy);
+		this.placeManager = placeManager;
+	}
+
+	@Override
+	protected void onBind() {
+		super.onBind();
+		registerHandler(getView().getSendButton().addClickHandler(
+				new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						login();
+					}
+				}));
+	}
+
+	@Override
+	protected void onReset() {
+		super.onReset();
+		getView().resetAndFocus();
+	}
+
+	@Override
+	protected void revealInParent() {
+		RevealRootContentEvent.fire(eventBus, this);
+	}
+
+	/**
+	 * Send the name from the nameField to the server and wait for a response.
+	 */
+	private void login() {
+		// First, we validate the input.
+		getView().setError("");
+		String loginText = getView().getName();
+		String passwordText = getView().getPassword();
+
+		if (!FieldVerifier.isValidName(loginText)) {
+			getView().setError("Please enter at least four characters");
+			return;
+		}
+
+		// Then, we transmit it to the ResponsePresenter, which will do the
+		// server call
+		placeManager.revealPlace(new PlaceRequest(NameTokens.responsePage)
+				.with(ResponsePresenter.loginParam, loginText).with(
+						ResponsePresenter.passwordParam, passwordText));
+	}
+
+}
