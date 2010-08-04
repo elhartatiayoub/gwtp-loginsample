@@ -32,12 +32,10 @@ import com.gwtplatform.samples.login.client.gatekeeper.UserGatekeeper;
 import com.gwtplatform.samples.login.client.presenter.AdminPresenter;
 import com.gwtplatform.samples.login.client.presenter.LoginPresenter;
 import com.gwtplatform.samples.login.client.presenter.MainPagePresenter;
-import com.gwtplatform.samples.login.client.presenter.ResponsePresenter;
 import com.gwtplatform.samples.login.client.presenter.UserPresenter;
 import com.gwtplatform.samples.login.client.view.AdminView;
 import com.gwtplatform.samples.login.client.view.LoginView;
 import com.gwtplatform.samples.login.client.view.MainPageView;
-import com.gwtplatform.samples.login.client.view.ResponseView;
 import com.gwtplatform.samples.login.client.view.UserView;
 import com.gwtplatform.samples.login.shared.CurrentUser;
 
@@ -59,9 +57,6 @@ public class MyModule extends AbstractPresenterModule {
 		// Presenters
 		bindPresenter(LoginPresenter.class, LoginPresenter.MyView.class,
 				LoginView.class, LoginPresenter.MyProxy.class);
-
-		bindPresenter(ResponsePresenter.class, ResponsePresenter.MyView.class,
-				ResponseView.class, ResponsePresenter.MyProxy.class);
 
 		bindPresenter(MainPagePresenter.class, MainPagePresenter.MyView.class,
 				MainPageView.class, MainPagePresenter.MyProxy.class);

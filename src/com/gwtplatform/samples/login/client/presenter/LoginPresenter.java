@@ -18,8 +18,10 @@ package com.gwtplatform.samples.login.client.presenter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.inject.Inject;
+import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.EventBus;
 import com.gwtplatform.mvp.client.PresenterImpl;
 import com.gwtplatform.mvp.client.View;
@@ -31,7 +33,10 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
 import com.gwtplatform.samples.login.client.NameTokens;
+import com.gwtplatform.samples.login.shared.CurrentUser;
 import com.gwtplatform.samples.login.shared.FieldVerifier;
+import com.gwtplatform.samples.login.shared.LoginAction;
+import com.gwtplatform.samples.login.shared.LoginResult;
 
 public class LoginPresenter extends
 		PresenterImpl<LoginPresenter.MyView, LoginPresenter.MyProxy> {
@@ -48,6 +53,9 @@ public class LoginPresenter extends
 		public void resetAndFocus();
 	}
 
+	private final DispatchAsync dispatcher;
+	private CurrentUser user;
+
 	@ProxyStandard
 	@NameToken(NameTokens.loginPage)
 	public interface MyProxy extends Proxy<LoginPresenter>, Place {
@@ -57,9 +65,12 @@ public class LoginPresenter extends
 
 	@Inject
 	public LoginPresenter(EventBus eventBus, MyView view, MyProxy proxy,
-			PlaceManager placeManager) {
+			PlaceManager placeManager, DispatchAsync dispatcher,
+			CurrentUser user) {
 		super(eventBus, view, proxy);
 		this.placeManager = placeManager;
+		this.dispatcher = dispatcher;
+		this.user = user;
 	}
 
 	@Override
@@ -99,11 +110,24 @@ public class LoginPresenter extends
 			return;
 		}
 
-		// Then, we transmit it to the ResponsePresenter, which will do the
-		// server call
-		placeManager.revealPlace(new PlaceRequest(NameTokens.responsePage)
-				.with(ResponsePresenter.loginParam, loginText).with(
-						ResponsePresenter.passwordParam, passwordText));
+		dispatcher.execute(new LoginAction(loginText, passwordText),
+				new AsyncCallback<LoginResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						getView().setError(
+								"An error occured: " + caught.getMessage());
+					}
+
+					@Override
+					public void onSuccess(LoginResult result) {
+						user = result.getResponse();
+						redirect();
+					}
+				});
+	}
+
+	private void redirect() {
+		placeManager.revealPlace(new PlaceRequest(NameTokens.mainPage));
 	}
 
 }

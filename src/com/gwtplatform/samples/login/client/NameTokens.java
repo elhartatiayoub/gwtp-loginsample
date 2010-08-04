@@ -41,12 +41,6 @@ public class NameTokens {
 		return loginPage;
 	}
 
-	public static final String responsePage = "!responsePage";
-
-	public static String getResponsePage() {
-		return responsePage;
-	}
-
 	public static final String mainPage = "!mainPage";
 
 	public static String getMainPage() {

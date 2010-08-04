@@ -29,7 +29,6 @@ import com.gwtplatform.samples.login.client.gatekeeper.UserGatekeeper;
 import com.gwtplatform.samples.login.client.presenter.AdminPresenter;
 import com.gwtplatform.samples.login.client.presenter.LoginPresenter;
 import com.gwtplatform.samples.login.client.presenter.MainPagePresenter;
-import com.gwtplatform.samples.login.client.presenter.ResponsePresenter;
 import com.gwtplatform.samples.login.client.presenter.UserPresenter;
 
 @GinModules({ DispatchAsyncModule.class, MyModule.class })
@@ -41,8 +40,6 @@ public interface MyGinjector extends Ginjector {
 	ProxyFailureHandler getProxyFailureHandler();
 
 	Provider<LoginPresenter> getLoginPresenter();
-
-	AsyncProvider<ResponsePresenter> getResponsePresenter();
 
 	AsyncProvider<AdminPresenter> getAdminPresenter();
 
