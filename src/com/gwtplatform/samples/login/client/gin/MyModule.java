@@ -27,8 +27,6 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyFailureHandler;
 import com.gwtplatform.mvp.client.proxy.TokenFormatter;
 import com.gwtplatform.samples.login.client.MyPlaceManager;
-import com.gwtplatform.samples.login.client.gatekeeper.AdminGatekeeper;
-import com.gwtplatform.samples.login.client.gatekeeper.UserGatekeeper;
 import com.gwtplatform.samples.login.client.presenter.AdminPresenter;
 import com.gwtplatform.samples.login.client.presenter.LoginPresenter;
 import com.gwtplatform.samples.login.client.presenter.MainPagePresenter;
@@ -45,9 +43,7 @@ public class MyModule extends AbstractPresenterModule {
 	protected void configure() {
 		bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
 		bind(PlaceManager.class).to(MyPlaceManager.class).in(Singleton.class);
-		bind(CurrentUser.class).in(Singleton.class);
-		bind(AdminGatekeeper.class).in(Singleton.class);
-		bind(UserGatekeeper.class).in(Singleton.class);
+		bind(CurrentUser.class).asEagerSingleton();
 		bind(TokenFormatter.class).to(ParameterTokenFormatter.class).in(
 				Singleton.class);
 		bind(RootPresenter.class).asEagerSingleton();

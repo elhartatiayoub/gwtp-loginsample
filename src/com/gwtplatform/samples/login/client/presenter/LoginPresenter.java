@@ -120,7 +120,9 @@ public class LoginPresenter extends
 
 					@Override
 					public void onSuccess(LoginResult result) {
-						user = result.getResponse();
+						user.setRoles(result.getResponse().getRoles());
+						user.setUsername(result.getResponse().getUsername());
+						
 						redirect();
 					}
 				});
