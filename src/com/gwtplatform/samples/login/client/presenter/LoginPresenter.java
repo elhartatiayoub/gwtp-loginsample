@@ -122,14 +122,14 @@ public class LoginPresenter extends
 					public void onSuccess(LoginResult result) {
 						user.setRoles(result.getResponse().getRoles());
 						user.setUsername(result.getResponse().getUsername());
-						
+
 						redirect();
 					}
 				});
 	}
 
 	private void redirect() {
-		placeManager.revealPlace(new PlaceRequest(NameTokens.mainPage));
+		placeManager.revealPlace(new PlaceRequest(NameTokens.userPage));
 	}
 
 }

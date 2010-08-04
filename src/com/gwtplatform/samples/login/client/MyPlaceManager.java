@@ -31,7 +31,11 @@ public class MyPlaceManager extends PlaceManagerImpl {
 
 	@Override
 	public void revealDefaultPlace() {
-		revealPlace(new PlaceRequest(NameTokens.mainPage));
+		revealPlace(new PlaceRequest(NameTokens.loginPage));
 	}
 
+	@Override
+	public void revealErrorPlace(String invalidHistoryToken) {
+		super.revealErrorPlace(invalidHistoryToken);
+	}
 }
